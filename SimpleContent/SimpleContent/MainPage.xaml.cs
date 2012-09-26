@@ -403,20 +403,19 @@ namespace SimpleContent
 
         void ToggleVisibility()
         {
-            
-/*            if (selected_shape == "Polygon")
+            if (selected_shape == "Polygon")
             {
                 if (poly != null)
                 {
-                    if (poly .Visibility == System.Windows.Visibility.Visible)
+                    if (poly.StrokeColor == Color.FromArgb(0xFF, 0x00, 0x00, 0xFF))
                     {
-                        Debug.WriteLine("Set polygon Visibility off ");
-                        poly.Visibility = System.Windows.Visibility.Collapsed;
+                        poly.FillColor = Color.FromArgb(0x00, 0x00, 0xFF, 0x00);
+                        poly.StrokeColor = Color.FromArgb(0x00, 0x00, 0x00, 0xFF);
                     }
                     else
                     {
-                        Debug.WriteLine("Set polygon Visibility on ");
-                        poly.Visibility = System.Windows.Visibility.Visible;
+                        poly.FillColor = Color.FromArgb(0x55, 0x00, 0xFF, 0x00);
+                        poly.StrokeColor = Color.FromArgb(0xFF, 0x00, 0x00, 0xFF);
                     }
                 }
             }
@@ -424,15 +423,10 @@ namespace SimpleContent
             {
                 if (polyline != null)
                 {
-                    if (polyline.Visibility == System.Windows.Visibility.Visible)
-                    {
-                        Debug.WriteLine("Set polyline Visibility off ");
-                        polyline.Visibility = System.Windows.Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        Debug.WriteLine("Set polyline Visibility on ");
-                        polyline.Visibility = System.Windows.Visibility.Visible;
+                    if(polyline.StrokeColor == Color.FromArgb(0xFF, 0xFF, 0x00, 0x00)){
+                        polyline.StrokeColor = Color.FromArgb(0x00, 0xFF, 0x00, 0x00);
+                    }else{
+                        polyline.StrokeColor = Color.FromArgb(0xFF, 0xFF, 0x00, 0x00);
                     }
                 }
             }
@@ -440,18 +434,25 @@ namespace SimpleContent
             {
                 if (markerLayer != null)
                 {
-                    if (markerLayer.Visibility == System.Windows.Visibility.Visible)
+                    for (var i = 0; i < markerLayer.Count(); i++)
                     {
-                        Debug.WriteLine("Set marker Visibility off ");
-                        markerLayer.Visibility = System.Windows.Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        Debug.WriteLine("Set marker Visibility on ");
-                        markerLayer.Visibility = System.Windows.Visibility.Visible;
+                        Ellipse markker = (markerLayer[i].Content as Ellipse);
+                        if (markker != null)
+                        {
+                            if (markker.Visibility == System.Windows.Visibility.Visible)
+                            {
+                                Debug.WriteLine("Set marker Visibility off ");
+                                markker.Visibility = System.Windows.Visibility.Collapsed;
+                            }
+                            else
+                            {
+                                Debug.WriteLine("Set marker Visibility on ");
+                                markker.Visibility = System.Windows.Visibility.Visible;
+                            }
+                        }
                     }
                 }
-            }*/
+            }
         }
 
         void SentToBack()

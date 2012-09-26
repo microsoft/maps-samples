@@ -29,7 +29,7 @@ namespace MapMarkers
         MapLayer oneMarkerLayer = null;
         MapOverlay oneMarker = null;
         MapLayer markerLayer = null;
-
+        TextBlock MarkerTxt = null;
         // Constructor
         public MainPage()
         {
@@ -39,26 +39,30 @@ namespace MapMarkers
 
             PopupP = new Popup();
 
-            map1.MouseLeftButtonUp +=map1_MouseLeftButtonUp;
-            map1.MouseMove += map1_MouseMove;
+            System.Windows.Input.Touch.FrameReported += Touch_FrameReported;
+
         }
 
-        void map1_MouseMove(object sender, MouseEventArgs e)
+        void Touch_FrameReported(object sender, TouchFrameEventArgs e)
         {
-            Debug.WriteLine("map_MouseMove");
-
-            if (oneMarker != null && draggingNow)
+            if (draggingNow == true)
             {
-                oneMarker.GeoCoordinate = map1.ConvertViewportPointToGeoCoordinate(e.GetPosition(map1));
+                TouchPoint tp = e.GetPrimaryTouchPoint(map1);
 
+                if (tp.Action == TouchAction.Move)
+                {
+                    if (oneMarker != null)
+                    {
+                        oneMarker.GeoCoordinate = map1.ConvertViewportPointToGeoCoordinate(tp.Position);
+                    }
+                }
+                else if (tp.Action == TouchAction.Up)
+                {
+                    draggingNow = false;
+                    map1.IsEnabled = true;
+                }
             }
-        }
-
-        void map1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            Debug.WriteLine("map_MouseLeftButtonUp");
-            draggingNow = false;
-          
+            
         }
 
         private void AddSelectionPopUp()
@@ -222,19 +226,16 @@ namespace MapMarkers
             }
             else if (sellected == "Change text")
             {
-                if (oneMarker != null)
+                if (MarkerTxt != null)
                 {
-                    if (oneMarker.Content.ToString() == "Draggable")
+                    Debug.WriteLine("change text now from " + MarkerTxt.Text);
+                    if (MarkerTxt.Text == "Drag")
                     {
-                        Debug.WriteLine("change text now from " + oneMarker.Content.ToString());
-                        oneMarker.Content = "<H1>This is </H1>different text\n and more...";
-
-                        //  oneMarker.Content = "This is different text\nand more...";
+                        MarkerTxt.Text = "1234";
                     }
                     else
                     {
-                        Debug.WriteLine("change text now from " + oneMarker.Content.ToString());
-                        oneMarker.Content = "Draggable";
+                        MarkerTxt.Text = "Drag";
                     }
                 }
             }
@@ -333,20 +334,30 @@ namespace MapMarkers
                     oneMarkerLayer = new MapLayer();
                     oneMarker = new MapOverlay();
 
-                    Ellipse Circh = new Ellipse();
-                    Circh.Fill = new SolidColorBrush(Colors.Green);
-                    Circh.Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Blue);
-                    Circh.StrokeThickness = 8;
-                    Circh.Opacity = 0.8;
-                    Circh.Height = 50;
-                    Circh.Width = 50;
+                    Canvas canCan = new Canvas();
 
-                    oneMarker.Content = Circh; 
+                    Ellipse Circhegraphic = new Ellipse();
+                    Circhegraphic.Fill = new SolidColorBrush(Colors.Brown);
+                    Circhegraphic.Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Green);
+                    Circhegraphic.StrokeThickness = 5;
+                    Circhegraphic.Opacity = 0.8;
+                    Circhegraphic.Height = 40;
+                    Circhegraphic.Width = 60;
+
+                    canCan.Children.Add(Circhegraphic);
+                    MarkerTxt = new TextBlock { Text = "Drag" };
+                    MarkerTxt.HorizontalAlignment = HorizontalAlignment.Center;
+                    Canvas.SetLeft(MarkerTxt, 10);
+                    Canvas.SetTop(MarkerTxt, 5);
+                    Canvas.SetZIndex(MarkerTxt, 5);
+
+                    canCan.Children.Add(MarkerTxt);
+                    oneMarker.Content = canCan;
 
                     oneMarker.PositionOrigin = new Point(0.5, 0.5);
                     oneMarker.GeoCoordinate = new GeoCoordinate(60.35, 24.60);
-                    Circh.MouseLeftButtonDown += Circh_MouseLeftButtonDown;
-                    Circh.MouseLeftButtonUp += Circh_MouseLeftButtonUp;
+                    MarkerTxt.MouseLeftButtonDown += Circh_MouseLeftButtonDown;
+ 
               
                     oneMarkerLayer.Add(oneMarker);
                     map1.Layers.Add(oneMarkerLayer);
@@ -361,17 +372,11 @@ namespace MapMarkers
             Debug.WriteLine("oneMarker_MouseLeftButtonDown");
             if (oneMarker != null)
             {
-        
                 draggingNow = true;
+                map1.IsEnabled = false;
             }
         }
 
-        void Circh_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            Debug.WriteLine("oneMarker_MouseLeftButtonUp");
-            draggingNow = false;
-
-        }
 
 
         void FitToView(bool all)
@@ -477,6 +482,7 @@ namespace MapMarkers
                     map1.Layers.Remove(oneMarkerLayer);
                     oneMarker = null;
                     oneMarkerLayer = null;
+                    MarkerTxt = null;
                 }
             }
         }

@@ -24,7 +24,7 @@ namespace MoreMapContent
     {
         Popup PopupP;
         String selected_shape = "";
-        MapLayer Rectangle = null;
+        MapLayer Rectangle1 = null;
         MapLayer Circle = null;
         GeoCoordinate Circlepoint = null;
         GeoCoordinate Rectangepoint = null;
@@ -211,9 +211,9 @@ namespace MoreMapContent
         {
             if (selected_shape == "Rectangle")
             {
-                if (Rectangle == null)
+                if (Rectangle1 == null)
                 {
-                    Rectangle = new MapLayer();
+                    Rectangle1 = new MapLayer();
 
                     Rectangle rectanggle = new Rectangle();
                     rectanggle.Opacity = 0.7;
@@ -233,8 +233,8 @@ namespace MoreMapContent
                    // pin1.PositionOrigin = PositionOrigin.Center;
                     pin1.Content = rectanggle;
 
-                    Rectangle.Add(pin1);
-                    map1.Layers.Add( Rectangle);
+                    Rectangle1.Add(pin1);
+                    map1.Layers.Add(Rectangle1);
                 }
             }
             else if (selected_shape == "Circle")
@@ -304,7 +304,7 @@ namespace MoreMapContent
             double south = 0;
             double east = 0;
 
-            if (selected_shape == "Rectangle" && (Rectangle != null))
+            if (selected_shape == "Rectangle" && (Rectangle1 != null))
             {
                 map1.Center = Rectangepoint;
             }
@@ -338,10 +338,10 @@ namespace MoreMapContent
         {
             if (selected_shape == "Rectangle")
             {
-                if (Rectangle != null)
+                if (Rectangle1 != null)
                 {
-                    map1.Layers.Remove(Rectangle);
-                    Rectangle = null;
+                    map1.Layers.Remove(Rectangle1);
+                    Rectangle1 = null;
                 }
             }
             else if (selected_shape == "Circle")
@@ -367,35 +367,39 @@ namespace MoreMapContent
 
         void ToggleVisibility()
         {
-         /*   if (selected_shape == "Rectangle")
+            if (selected_shape == "Rectangle")
             {
-                if (Rectangle != null)
+                if (Rectangle1 != null && (Rectangle1.Count() > 0))
                 {
-                    if (Rectangle.Visibility == System.Windows.Visibility.Visible)
+                    Rectangle rect = (Rectangle1[0].Content as Rectangle);
+
+                    if (rect.Visibility == System.Windows.Visibility.Visible)
                     {
                         Debug.WriteLine("Set Rectangle Visibility off ");
-                        Rectangle.Visibility = System.Windows.Visibility.Collapsed;
+                        rect.Visibility = System.Windows.Visibility.Collapsed;
                     }
                     else
                     {
                         Debug.WriteLine("Set Rectangle Visibility on ");
-                        Rectangle.Visibility = System.Windows.Visibility.Visible;
+                        rect.Visibility = System.Windows.Visibility.Visible;
                     }
                 }
             }
             else if (selected_shape == "Circle")
             {
-                if (Circle != null)
+                if (Circle != null && (Circle.Count() >  0))
                 {
-                    if (Circle.Visibility == System.Windows.Visibility.Visible)
+                    Ellipse circcle = (Circle[0].Content as Ellipse);
+
+                    if (circcle.Visibility == System.Windows.Visibility.Visible)
                     {
                         Debug.WriteLine("Set Circle Visibility off ");
-                        Circle.Visibility = System.Windows.Visibility.Collapsed;
+                        circcle.Visibility = System.Windows.Visibility.Collapsed;
                     }
                     else
                     {
                         Debug.WriteLine("Set Circle Visibility on ");
-                        Circle.Visibility = System.Windows.Visibility.Visible;
+                        circcle.Visibility = System.Windows.Visibility.Visible;
                     }
                 }
             }
@@ -403,20 +407,24 @@ namespace MoreMapContent
             {
                 if (PolyCircle != null)
                 {
-                    if (PolyCircle.Visibility == System.Windows.Visibility.Visible)
+                    if (PolyCircle.StrokeColor == Color.FromArgb(0xFF, 0xFF, 0x00, 0xFF))
                     {
                         Debug.WriteLine("Set Polygon Visibility off ");
-                        PolyCircle.Visibility = System.Windows.Visibility.Collapsed;
-                        PolyRect.Visibility = System.Windows.Visibility.Collapsed;
+                        PolyCircle.FillColor = Color.FromArgb(0x00, 0xFF, 0xFF, 0x00);
+                        PolyCircle.StrokeColor = Color.FromArgb(0x00, 0xFF, 0x00, 0xFF);
+                        PolyRect.FillColor = Color.FromArgb(0x00, 0x00, 0x00, 0x00);
+                        PolyRect.StrokeColor = Color.FromArgb(0x00, 0xFF, 0xFF, 0xFF);
                     }
                     else
                     {
                         Debug.WriteLine("Set Polygon Visibility on ");
-                        PolyCircle.Visibility = System.Windows.Visibility.Visible;
-                        PolyRect.Visibility = System.Windows.Visibility.Visible;
+                        PolyCircle.FillColor = Color.FromArgb(0x55, 0xFF, 0xFF, 0x00);
+                        PolyCircle.StrokeColor = Color.FromArgb(0xFF, 0xFF, 0x00, 0xFF);
+                        PolyRect.FillColor = Color.FromArgb(0x55, 0x00, 0x00, 0x00);
+                        PolyRect.StrokeColor = Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF);
                     }
                 }
-            }*/
+            }
         }
 
         void SentToBack()
@@ -424,6 +432,16 @@ namespace MoreMapContent
             UIElement PolygonElement = null;//PolyCircle as UIElement;
             UIElement CircleElement = null;//Circle as UIElement;
             UIElement RectangleElement = null;//Rectangle as UIElement;
+
+            if (Rectangle1 != null && (Rectangle1.Count() > 0))
+            {
+                RectangleElement = (Rectangle1[0].Content as UIElement);
+            }
+
+            if (Circle != null && (Circle.Count() > 0))
+            {
+                CircleElement = (Circle[0].Content as UIElement);
+            }
 
             var Polygon = 0;
             var RectangleZ = 0;
@@ -443,6 +461,8 @@ namespace MoreMapContent
             {
                 RectangleZ = Canvas.GetZIndex(RectangleElement);
             }
+
+            Debug.WriteLine("Start values. RectangleZ: " + RectangleZ + ", circleZ: " + lineZ + ", PolygonZ: " + Polygon);
 
             if (selected_shape == "Rectangle")
             {
@@ -498,7 +518,17 @@ namespace MoreMapContent
         {
             UIElement PolygonElement = null;// PolyCircle as UIElement;
             UIElement CircleElement = null;//Circle as UIElement;
-            UIElement RectangleElement = null;//Rectangle as UIElement;
+            UIElement RectangleElement = null;//Rectangle1 as UIElement;
+
+            if (Rectangle1 != null && (Rectangle1.Count() > 0))
+            {
+                RectangleElement = (Rectangle1[0].Content as UIElement);
+            }
+
+            if (Circle != null && (Circle.Count() > 0))
+            {
+                CircleElement = (Circle[0].Content as UIElement);
+            }
 
             var PolygonZ = 0;
             var RectangleZ = 0;
@@ -518,6 +548,8 @@ namespace MoreMapContent
             {
                 RectangleZ = Canvas.GetZIndex(RectangleElement);
             }
+
+            Debug.WriteLine("Start values. RectangleZ: " + RectangleZ + ", circleZ: " + lineZ + ", PolygonZ: " + PolygonZ);
 
             if (selected_shape == "Rectangle")
             {
