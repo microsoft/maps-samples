@@ -24,9 +24,6 @@ namespace HelloMap
         {
             InitializeComponent();
 
-            ///Sample code to call helper function to localize the ApplicationBar
-            //BuildApplicationBar();
-
             map1.IsEnabledChanged += map1_IsEnabledChanged_1;
         }
 

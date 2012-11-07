@@ -159,37 +159,9 @@ namespace MapRouting
             oneMarker.Content = canCan;
 
             oneMarker.PositionOrigin = new Point(0.5, 0.5);
-            textt.MouseLeftButtonUp += textt_MouseLeftButtonUp;
-            textt.MouseLeftButtonDown += textt_MouseLeftButtonDown;
-            textt.MouseMove += textt_MouseMove;
+ 
 
             return oneMarker;
-        }
-
-        void textt_MouseMove(object sender, MouseEventArgs e)
-        {
-            TextBlock blockt = sender as TextBlock;
-            if (blockt != null){
-                Debug.WriteLine("textt_MouseMove: " + blockt.Text);
-            }
-        }
-
-        void textt_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            TextBlock blockt = sender as TextBlock;
-            if (blockt != null)
-            {
-                Debug.WriteLine("textt_MouseLeftButtonDown: " + blockt.Text);
-            }
-        }
-
-        void textt_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            TextBlock blockt = sender as TextBlock;
-            if (blockt != null)
-            {
-                Debug.WriteLine("textt_MouseLeftButtonUp: " + blockt.Text);
-            }
         }
     }
 }

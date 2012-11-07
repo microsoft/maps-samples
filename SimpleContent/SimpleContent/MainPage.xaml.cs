@@ -39,9 +39,6 @@ namespace SimpleContent
             PopupP = new Popup();
 
             map1.MouseLeftButtonDown += map1_MouseLeftButtonDown;
-
-            
-
         }
 
         void map1_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

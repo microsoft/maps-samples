@@ -14,7 +14,6 @@ using Microsoft.Phone.Shell;
 using MyLocation.Resources;
 
 using Microsoft.Phone.Maps.Controls;
-using Microsoft.Phone.Shell;
 using System.Diagnostics;
 using System.Windows.Controls.Primitives;
 using System.Collections.ObjectModel;
@@ -178,11 +177,24 @@ namespace MyLocation
 
                 map1.MapElements.Add(PolyCircle);
             }
+            Debug.WriteLine("locationa ccuracy :" +accuracy);
+            
+            if(accuracy < 50){
+                accuracy = 50; // to be able to show the polygon
+            }
 
             PolyCircle.Path = CreateCircle(e.Position.Location, accuracy);
 
             map1.Center = e.Position.Location;
 
+            if (accuracy < 100)
+            {
+                map1.ZoomLevel = 16;
+            }
+            else
+            {
+                map1.ZoomLevel = 10;
+            }
             if (latitudeText != null)
             {
                 latitudeText.Text = "Lat: " + e.Position.Location.Latitude.ToString();

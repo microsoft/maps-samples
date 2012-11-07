@@ -25,9 +25,6 @@ namespace MapEvents
         {
             InitializeComponent();
 
-            ///Sample code to call helper function to localize the ApplicationBar
-            //BuildApplicationBar();
-
             Debug.WriteLine("add handlers");
 
             map1.Loaded += map1_Loaded_1;
