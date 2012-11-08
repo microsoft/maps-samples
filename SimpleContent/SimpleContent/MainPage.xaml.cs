@@ -215,6 +215,7 @@ namespace SimpleContent
                     
                     //Define the polygon vertices
                     GeoCoordinateCollection boundingLocations = new GeoCoordinateCollection();
+                    boundingLocations.Add(new GeoCoordinate(-1.22, -2.81));
                     boundingLocations.Add(new GeoCoordinate(60.22, 24.81));
                     boundingLocations.Add(new GeoCoordinate(60.30, 24.70));
                     boundingLocations.Add(new GeoCoordinate(60.14, 24.57));
@@ -303,33 +304,34 @@ namespace SimpleContent
             }
         }
 
+        bool PointInRectangle(Point pt, double North, double East, double South, double West)
+        {
+            // you may want to check that the point is a valid coordinate
+            if (West < East)
+            {
+                return pt.X < East && pt.X > West && pt.Y < North && pt.Y > South;
+            }
+            else // it crosses the date line
+            {
+                return (pt.X < East || pt.X > West) && pt.Y < North && pt.Y > South;
+            }
+        }
+
         void FitToView()
         {
-
-            bool gotRect = false;
-            double north = 0;
-            double west = 0;
-            double south = 0;
-            double east = 0;
-
+            LocationRectangle setRect = null;
             if (selected_shape == "Polygon" && (poly != null))
             {
-                gotRect = true;
+                Debug.WriteLine("Fitting polygon into the view");
 
-                north = south = poly.Path[0].Latitude;
-                west = east = poly.Path[0].Longitude;
-
-                foreach (var p in poly.Path.Skip(1))
-                {
-                    if (north < p.Latitude) north = p.Latitude;
-                    if (west > p.Longitude) west = p.Longitude;
-                    if (south > p.Latitude) south = p.Latitude;
-                    if (east < p.Longitude) east = p.Longitude;
-                }
+                setRect = LocationRectangle.CreateBoundingRectangle(poly.Path);
             }
             else if (selected_shape == "Polyline" && (polyline != null))
             {
-                gotRect = true;
+                double north = 0;
+                double west = 0;
+                double south = 0;
+                double east = 0;
 
                 north = south = polyline.Path[0].Latitude;
                 west = east = polyline.Path[0].Longitude;
@@ -341,32 +343,24 @@ namespace SimpleContent
                     if (south > p.Latitude) south = p.Latitude;
                     if (east < p.Longitude) east = p.Longitude;
                 }
+
+                setRect = new LocationRectangle(north, west, south, east);
             }
             else if (selected_shape == "Markers" && (markerLayer != null))
             {
-                for (var p = 0; p < markerLayer.Count(); p++ )
+                Debug.WriteLine("Fitting: " + markerLayer.Count() + " markers into the view");
+                GeoCoordinate[] geoArr = new GeoCoordinate[markerLayer.Count()];
+                for (var p = 0; p < markerLayer.Count(); p++)
                 {
-                    MapOverlay MarkerElement = markerLayer[p];
-
-                    if (!gotRect)
-                    {
-                        gotRect = true;
-                        north = south = MarkerElement.GeoCoordinate.Latitude;
-                        west = east = MarkerElement.GeoCoordinate.Longitude;
-                    }
-                    else
-                    {
-                        if (north < MarkerElement.GeoCoordinate.Latitude) north = MarkerElement.GeoCoordinate.Latitude;
-                        if (west > MarkerElement.GeoCoordinate.Longitude) west = MarkerElement.GeoCoordinate.Longitude;
-                        if (south > MarkerElement.GeoCoordinate.Latitude) south = MarkerElement.GeoCoordinate.Latitude;
-                        if (east < MarkerElement.GeoCoordinate.Longitude) east = MarkerElement.GeoCoordinate.Longitude;
-                    }
+                    geoArr[p] = markerLayer[p].GeoCoordinate;
                 }
+
+                setRect = LocationRectangle.CreateBoundingRectangle(geoArr);
             }
 
-            if (gotRect)
+            if (setRect != null)
             {
-                map1.SetView(new LocationRectangle(north, west, south, east));
+                map1.SetView(setRect);
             }
         }
 
