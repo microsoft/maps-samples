@@ -26,9 +26,11 @@ namespace AreaSelector
     {
         int areaRadius = 10000;
         bool draggingNow = false;
+        bool draggingArea = false;
         MapLayer markerLayer = null;
      
         MapOverlay oneMarker = null;
+        MapOverlay twoMarker = null;
 
         MapPolygon PolyCircle = null;
 
@@ -63,11 +65,10 @@ namespace AreaSelector
                 {
                     // tap event when we do not have the marker visible, so lets move it here
                     oneMarker.GeoCoordinate = map1.ConvertViewportPointToGeoCoordinate(e.GetPosition(map1));
-
-                    if (PolyCircle != null)
+                    DoCreateTheAreaCircle();
+                    if (twoMarker != null && PolyCircle != null && PolyCircle.Path != null)
                     {
-                        GeoCoordinateCollection boundingLocations = CreateCircle(oneMarker.GeoCoordinate, areaRadius);
-                        PolyCircle.Path = boundingLocations;
+                        twoMarker.GeoCoordinate = PolyCircle.Path[0];
                     }
                 }
             }
@@ -81,19 +82,28 @@ namespace AreaSelector
 
                 if (tp.Action == TouchAction.Move)
                 {
-                    if (oneMarker != null)
+                    if (draggingArea == true)
+                    {
+                        if (twoMarker != null)
+                        {
+                            twoMarker.GeoCoordinate = map1.ConvertViewportPointToGeoCoordinate(tp.Position);
+                            areaRadius = (int)twoMarker.GeoCoordinate.GetDistanceTo(oneMarker.GeoCoordinate);
+                            DoCreateTheAreaCircle();
+                        }
+                    }
+                    else if (oneMarker != null)
                     {
                         oneMarker.GeoCoordinate = map1.ConvertViewportPointToGeoCoordinate(tp.Position);
-                        if (PolyCircle != null)
+                        DoCreateTheAreaCircle();
+                        if (twoMarker != null && PolyCircle != null && PolyCircle.Path != null)
                         {
-                            GeoCoordinateCollection boundingLocations = CreateCircle(oneMarker.GeoCoordinate, areaRadius);
-                            PolyCircle.Path = boundingLocations;
+                            twoMarker.GeoCoordinate = PolyCircle.Path[0];
                         }
                     }
                 }
                 else if (tp.Action == TouchAction.Up)
                 {
-                    draggingNow = false;
+                    draggingArea = draggingNow = false;
                     map1.IsEnabled = true;
                 }
             }
@@ -114,7 +124,7 @@ namespace AreaSelector
 
             TitleBox.Text = "Select " + target;
 
-            if ((Application.Current as App).CircleAreaRadius != null && (Application.Current as App).CircleAreaRadius > 0)
+            if ( (Application.Current as App).CircleAreaRadius > 0)
             {
                 areaRadius = (Application.Current as App).CircleAreaRadius;
             }
@@ -153,11 +163,22 @@ namespace AreaSelector
             Debug.WriteLine("textt_MouseLeftButtonDown");
             if (oneMarker != null)
             {
+                draggingArea = false;
                 draggingNow = true;
                 map1.IsEnabled = false;
             }
         }
 
+        void area_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Debug.WriteLine("area_MouseLeftButtonDown");
+            if (twoMarker != null)
+            {
+                draggingArea = true;
+                draggingNow = true;
+                map1.IsEnabled = false;
+            }
+        }
 
         private void zoomSlider_ValueChanged_1(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -199,18 +220,29 @@ namespace AreaSelector
             oneMarker.PositionOrigin = new Point(0.5, 0.5);
             Circhegraphic.MouseLeftButtonDown += textt_MouseLeftButtonDown;
 
-            PolyCircle = new MapPolygon();
+            DoCreateTheAreaCircle();
 
-            GeoCoordinateCollection boundingLocations = CreateCircle(oneMarker.GeoCoordinate, areaRadius);
+            if (PolyCircle != null && PolyCircle.Path != null)
+            {
+                twoMarker = new MapOverlay();
+                twoMarker.GeoCoordinate = PolyCircle.Path[0];
 
-            //Set the polygon properties
-            PolyCircle.Path = boundingLocations;
-            PolyCircle.FillColor = Color.FromArgb(0x55, 0xFF, 0xFF, 0x00);
-            PolyCircle.StrokeColor = Color.FromArgb(0xFF, 0xFF, 0x00, 0xFF);
-            PolyCircle.StrokeThickness = 1;
+                Ellipse Cirche2 = new Ellipse();
+                Cirche2.Fill = new SolidColorBrush(Colors.Yellow);
+                Cirche2.Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red);
+                Cirche2.StrokeThickness = 15;
+                Cirche2.Opacity = 0.8;
+                Cirche2.Height = 40;
+                Cirche2.Width = 40;
 
-            map1.MapElements.Add(PolyCircle);
-            
+                twoMarker.Content = Cirche2;
+
+                twoMarker.PositionOrigin = new Point(0.5, 0.5);
+                Cirche2.MouseLeftButtonDown += area_MouseLeftButtonDown;
+
+                markerLayer.Add(twoMarker);
+            }
+
             markerLayer.Add(oneMarker);
 
             map1.Center = oneMarker.GeoCoordinate;
@@ -224,6 +256,24 @@ namespace AreaSelector
         public static double ToDegrees(double radians)
         {
             return radians * (180 / Math.PI);
+        }
+
+        private void DoCreateTheAreaCircle()
+        {
+            GeoCoordinateCollection boundingLocations = CreateCircle(oneMarker.GeoCoordinate, areaRadius);
+            
+            if(PolyCircle == null){
+                PolyCircle = new MapPolygon();
+
+                PolyCircle.Path = boundingLocations;
+                PolyCircle.FillColor = Color.FromArgb(0x55, 0xFF, 0xFF, 0x00);
+                PolyCircle.StrokeColor = Color.FromArgb(0xFF, 0xFF, 0x00, 0xFF);
+                PolyCircle.StrokeThickness = 1;
+
+                map1.MapElements.Add(PolyCircle);
+            }else{
+                PolyCircle.Path = boundingLocations;
+            }
         }
 
         public static GeoCoordinateCollection CreateCircle(GeoCoordinate center, double radius)

@@ -36,7 +36,7 @@ namespace AreaSelector
                 (Application.Current as App).SelectedLocation = null;
             }
 
-            if ((Application.Current as App).CircleAreaRadius != null && (Application.Current as App).CircleAreaRadius > 0)
+            if ((Application.Current as App).CircleAreaRadius > 0)
             {
                 StringBox.Text = (Application.Current as App).CircleAreaRadius.ToString();
             }
