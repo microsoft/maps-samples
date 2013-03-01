@@ -24,7 +24,6 @@ namespace MapMarkers
     public partial class MainPage : PhoneApplicationPage
     {
         bool draggingNow = false;
-        Popup PopupP;
         String selected_shape = "";
         MapLayer oneMarkerLayer = null;
         MapOverlay oneMarker = null;
@@ -35,10 +34,6 @@ namespace MapMarkers
         {
             InitializeComponent();
             Debug.WriteLine("We are started"); //Check to see if the "Redirect all Output Window text to the Immediate Window" is checked under Tools -> Options -> Debugging -> General.  
-            AddSelectionPopUp();
-
-            PopupP = new Popup();
-
             System.Windows.Input.Touch.FrameReported += Touch_FrameReported;
 
         }
@@ -62,145 +57,40 @@ namespace MapMarkers
                     map1.IsEnabled = true;
                 }
             }
-            
         }
 
-        private void AddSelectionPopUp()
+        private void Button_Menubut_Click(object sender, RoutedEventArgs e)
         {
-            Popup SelectionPopupP = new Popup();
+            if (sender == CanCelMenuBut)
+            {
+                MenuSelectionGrip.Visibility = System.Windows.Visibility.Collapsed;
+            }
+            else
+            {
+                if (sender == OnemarkerBut)
+                {
+                   selected_shape = "One marker";
+                }
+                else if (sender == MarkersBut)
+                {
+                    selected_shape = "5 Markers";
+                }
 
-
-            StackPanel horpanel = new StackPanel();
-            horpanel.Orientation = System.Windows.Controls.Orientation.Horizontal;
-            horpanel.Background = new SolidColorBrush(Colors.Black);
-            horpanel.Opacity = 0.7;
-
-            Button buttonPolygon = new Button();
-            buttonPolygon.Content = "One marker";
-            buttonPolygon.Margin = new Thickness(5.0);
-            buttonPolygon.Click += new RoutedEventHandler(Button_marker_Click);
-
-            Button buttonRectangle = new Button();
-            buttonRectangle.Content = "5 Markers";
-            buttonRectangle.Margin = new Thickness(5.0);
-            buttonRectangle.Click += new RoutedEventHandler(Button_markers_Click);
-
-            horpanel.Children.Add(buttonPolygon);
-            horpanel.Children.Add(buttonRectangle);
-            SelectionPopupP.Child = horpanel;
-
-            // Set where the popup will show up on the screen.
-            SelectionPopupP.VerticalOffset = 30;
-            SelectionPopupP.HorizontalOffset = 20;
-
-            // Open the popup.
-            SelectionPopupP.IsOpen = true;
-
+                MenuSelectionLiat.SelectedIndex = 0;
+                MenuSelectionGrip.Visibility = System.Windows.Visibility.Visible;
+            }
         }
+
 
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("We are loaded");
         }
 
-        private void Button_marker_Click(object sender, RoutedEventArgs e)
-        {
-            selected_shape = "One marker";
-            OpenPopUpSelection(true);
-        }
-
-        private void Button_markers_Click(object sender, RoutedEventArgs e)
-        {
-            selected_shape = "5 Markers";
-            OpenPopUpSelection(false);
-        }
-
-        private void OpenPopUpSelection(bool oneMarker)
-        {
-            // Create some content to show in the popup. Typically you would 
-            // create a user control.
-            Border border = new Border();
-            border.BorderBrush = new SolidColorBrush(Colors.Black);
-            border.BorderThickness = new Thickness(5.0);
-
-
-            StackPanel panel1 = new StackPanel();
-            panel1.Background = new SolidColorBrush(Colors.Black);
-            panel1.Opacity = 0.7;
-
-            TextBlock textBox1 = new TextBlock();
-
-            textBox1.Text = selected_shape;
-            textBox1.FontSize = 60;
-            textBox1.Width = 250;
-            textBox1.Foreground = new SolidColorBrush(Colors.Blue);
-            textBox1.Opacity = 1;
-
-            ListBox listBox1 = new ListBox();
-
-            listBox1.FontSize = 35;
-            listBox1.Foreground = new SolidColorBrush(Colors.White);
-            listBox1.Opacity = 1;
-
-            listBox1.Items.Add("Add");
-            listBox1.Items.Add("Remove");
-
-            if (!oneMarker)
-            {
-                listBox1.Items.Add("Remove one marker");
-            }
-
-            listBox1.Items.Add("Fit to View");
-
-            //      if ((markerLayer != null) && (oneMarker != null))
-            {
-                listBox1.Items.Add("Fit All to View");
-            }
-
-            if (oneMarker)
-            {
-                listBox1.Items.Add("Change text");
-            }
-
-
-            listBox1.SelectionChanged += SelectionChangedEventHandler;
-
-            Button button1 = new Button();
-            button1.Content = "Close";
-            button1.Margin = new Thickness(5.0);
-            button1.Foreground = new SolidColorBrush(Colors.White);
-            button1.Opacity = 1;
-            button1.Click += new RoutedEventHandler(Cancel_Click);
-
-            panel1.Children.Add(textBox1);
-            panel1.Children.Add(listBox1);
-            panel1.Children.Add(button1);
-            border.Child = panel1;
-
-            // Set the Child property of Popup to the border 
-            // which contains a stackpanel, textblock and button.
-            PopupP.Child = border;
-
-            // Set where the popup will show up on the screen.
-            PopupP.VerticalOffset = 100;
-            PopupP.HorizontalOffset = 50;
-
-            // Open the popup.
-            PopupP.IsOpen = true;
-
-        }
-
-        void Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            // Close the popup.
-            PopupP.IsOpen = false;
-            Debug.WriteLine("Cancel_Click ");
-        }
-
         void SelectionChangedEventHandler(Object sender, SelectionChangedEventArgs e)
         {
-
-            String sellected = (sender as ListBox).SelectedItem.ToString();
+            ListBox BOXX = (sender as ListBox);
+            String sellected = (BOXX.SelectedItem as TextBlock).Text;
 
             Debug.WriteLine("ListBox1SelectedIndexChanged " + sellected);
 
@@ -366,7 +256,6 @@ namespace MapMarkers
             }
         }
 
-     
         void Circh_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Debug.WriteLine("oneMarker_MouseLeftButtonDown");
@@ -376,8 +265,6 @@ namespace MapMarkers
                 map1.IsEnabled = false;
             }
         }
-
-
 
         void FitToView(bool all)
         {
@@ -486,8 +373,5 @@ namespace MapMarkers
                 }
             }
         }
-
-
-
     }
 }

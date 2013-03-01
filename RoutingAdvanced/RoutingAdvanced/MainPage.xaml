@@ -7,49 +7,81 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:maps="clr-namespace:Microsoft.Phone.Maps.Controls;assembly=Microsoft.Phone.Maps"
-   
-    mc:Ignorable="d"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
 
-    <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        <!--LayoutRoot is the root grid where all page content is placed-->
+        <Grid x:Name="LayoutRoot" Background="Transparent">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <StackPanel Orientation="Horizontal" Grid.Row="1" >
-                <Button x:Name="Hplus" Content="+" Click="Button_Click_1"></Button>
-                <Button x:Name="Hmins" Content="-" Click="Button_Click_1"></Button>
-                <Button x:Name="TrMod" Content="Drive" Click="Button_Click_1"></Button>
-                <Button x:Name="Optim" Content="Quickest" Click="Button_Click_1"></Button>
+   
+            <!--TitlePanel contains the name of the application and page title-->
+            <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+                <StackPanel Orientation="Horizontal" Grid.Row="1" >
+                    <Button x:Name="Hplus" Content="+" Click="Button_Click_1"></Button>
+                    <Button x:Name="Hmins" Content="-" Click="Button_Click_1"></Button>
+                    <Button x:Name="TrMod" Content="Drive" Click="Button_Click_1"></Button>
+                    <Button x:Name="Optim" Content="Quickest" Click="Button_Click_1"></Button>
+                </StackPanel>
             </StackPanel>
-            <Button x:Name="Rutte" Content="get the Route" Click="Button_Click_1"></Button>
-        </StackPanel>
+   
 
-        <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <maps:Map
+            <!--ContentPanel - place additional content here-->
+            <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.ColumnSpan="1" Text="Origin:" />
+                <toolkit:PerformanceProgressBar Grid.Row="1" Grid.ColumnSpan="4" x:Name="GeoProgress1" IsIndeterminate="false"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3"  x:Name="OriginTitle" ></TextBlock>
+
+                <TextBlock Grid.Row="3" Grid.ColumnSpan="1" Text="Destination" />
+                <toolkit:PerformanceProgressBar Grid.Row="3" Grid.ColumnSpan="4" x:Name="GeoProgress2" IsIndeterminate="false"/>
+                <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"  x:Name="DestinationTitle"></TextBlock>
+
+                <Grid Grid.Row="6" Grid.ColumnSpan="4" Margin="12,0,12,0">
+
+                    <maps:Map
                 Name="map1"
-                Center="60.33,24.30"
-                ZoomLevel="7" 
+                Center="60.23140588,24.93438271"
+                ZoomLevel="11" 
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
-               LandmarksEnabled="True"
+                LandmarksEnabled="True"
                 >
-            </maps:Map>
-        </Grid>
+                    </maps:Map>
+                    <StackPanel x:Name="zoomPanel" Background="#77000000" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="211"  Width="52" Margin="0,0,0,60" >
+                        <Slider x:Name="zoomSlider" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="201" Width="42" Minimum="1" Maximum="20" ValueChanged="zoomSlider_ValueChanged_1"  Margin="0,0,0,80"/>
+                    </StackPanel>
 
-        <!--Uncomment to see an alignment grid to help ensure your controls are
-            aligned on common boundaries.  Remove or comment out before shipping
-            your application.-->
-        <!--<Image Margin="0" Source="/Assets/AlignmentGrid.png" Stretch="None" IsHitTestVisible="False" />-->
-    </Grid>
+
+                </Grid>
+            <Button x:Name="Rutte" Grid.ColumnSpan="4" Grid.Row="9" Content="get the Route" Click="Button_Click_1"/>
+            </Grid>
+
+        </Grid>
 
 </phone:PhoneApplicationPage>

@@ -22,7 +22,6 @@ namespace MoreMapContent
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        Popup PopupP;
         String selected_shape = "";
         MapLayer Rectangle1 = null;
         MapLayer Circle = null;
@@ -37,10 +36,7 @@ namespace MoreMapContent
         {
             InitializeComponent();
             Debug.WriteLine("We are started"); //Check to see if the "Redirect all Output Window text to the Immediate Window" is checked under Tools -> Options -> Debugging -> General.  
-
-            AddSelectionPopUp();
             map1.MouseLeftButtonDown += map1_MouseLeftButtonDown;
-            PopupP = new Popup();
         }
 
         void map1_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -49,134 +45,41 @@ namespace MoreMapContent
             Debug.WriteLine("map1_MouseLeftButtonDown, MapElement count: " + listt.Count());
         }
 
-        private void AddSelectionPopUp()
-        {
-            Popup SelectionPopupP = new Popup();
-
-
-            StackPanel horpanel = new StackPanel();
-            horpanel.Orientation = System.Windows.Controls.Orientation.Horizontal;
-            horpanel.Background = new SolidColorBrush(Colors.Black);
-            horpanel.Opacity = 0.7;
-
-            Button buttonPolygon = new Button();
-            buttonPolygon.Content = "Polygons";
-            buttonPolygon.Margin = new Thickness(5.0);
-            buttonPolygon.Click += new RoutedEventHandler(Button_Polygons_Click);
-
-            Button buttonRectangle = new Button();
-            buttonRectangle.Content = "Rectangle";
-            buttonRectangle.Margin = new Thickness(5.0);
-            buttonRectangle.Click += new RoutedEventHandler(Button_Rectangle_Click);
-
-            Button buttonCircle = new Button();
-            buttonCircle.Content = "Circle";
-            buttonCircle.Margin = new Thickness(5.0);
-            buttonCircle.Click += new RoutedEventHandler(Button_Circle_Click);
-
-            horpanel.Children.Add(buttonPolygon);
-            horpanel.Children.Add(buttonRectangle);
-            horpanel.Children.Add(buttonCircle);
-            SelectionPopupP.Child = horpanel;
-
-
-            // Set where the popup will show up on the screen.
-            SelectionPopupP.VerticalOffset = 30;
-            SelectionPopupP.HorizontalOffset = 20;
-
-            // Open the popup.
-            SelectionPopupP.IsOpen = true;
-
-        }
-
         private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("We are loaded");
         }
 
-        private void Button_Polygons_Click(object sender, RoutedEventArgs e)
+        private void Button_Menubut_Click(object sender, RoutedEventArgs e)
         {
-            selected_shape = "Polygons";
-            OpenPopUpSelection();
-        }
+            if (sender == CanCelMenuBut)
+            {
+                MenuSelectionGrip.Visibility = System.Windows.Visibility.Collapsed;
+            }
+            else
+            {
+                if (sender == PolygonsBut)
+                {
+                    selected_shape = "Polygons";
+                }
+                else if (sender == RectangleBut)
+                {
+                    selected_shape = "Rectangle";
+                }
+                else if (sender == CircleBut)
+                {
+                    selected_shape = "Circle";
+                }
 
-        private void Button_Rectangle_Click(object sender, RoutedEventArgs e)
-        {
-            selected_shape = "Rectangle";
-            OpenPopUpSelection();
-        }
-
-        private void Button_Circle_Click(object sender, RoutedEventArgs e)
-        {
-            selected_shape = "Circle";
-            OpenPopUpSelection();
-        }
-
-        private void OpenPopUpSelection()
-        {
-            // Create some content to show in the popup. Typically you would 
-            // create a user control.
-            Border border = new Border();
-            border.BorderBrush = new SolidColorBrush(Colors.Black);
-            border.BorderThickness = new Thickness(5.0);
-
-
-            StackPanel panel1 = new StackPanel();
-            panel1.Background = new SolidColorBrush(Colors.Black);
-            panel1.Opacity = 0.7;
-
-            TextBlock textBox1 = new TextBlock();
-
-            textBox1.Text = selected_shape;
-            textBox1.FontSize = 60;
-            textBox1.Width = 250;
-            textBox1.Foreground = new SolidColorBrush(Colors.Blue);
-            textBox1.Opacity = 1;
-
-            ListBox listBox1 = new ListBox();
-
-            listBox1.FontSize = 35;
-            listBox1.Foreground = new SolidColorBrush(Colors.White);
-            listBox1.Opacity = 1;
-
-            listBox1.Items.Add("Add");
-            listBox1.Items.Add("Remove");
-            listBox1.Items.Add("Bring to top");
-            listBox1.Items.Add("Sent to back");
-            listBox1.Items.Add("Toggle visibility");
-            listBox1.Items.Add("Fit to View");
-
-            listBox1.SelectionChanged += SelectionChangedEventHandler;
-
-            Button button1 = new Button();
-            button1.Content = "Close";
-            button1.Margin = new Thickness(5.0);
-            button1.Foreground = new SolidColorBrush(Colors.White);
-            button1.Opacity = 1;
-            button1.Click += new RoutedEventHandler(Cancel_Click);
-
-            panel1.Children.Add(textBox1);
-            panel1.Children.Add(listBox1);
-            panel1.Children.Add(button1);
-            border.Child = panel1;
-
-            // Set the Child property of Popup to the border 
-            // which contains a stackpanel, textblock and button.
-            PopupP.Child = border;
-
-            // Set where the popup will show up on the screen.
-            PopupP.VerticalOffset = 100;
-            PopupP.HorizontalOffset = 50;
-
-            // Open the popup.
-            PopupP.IsOpen = true;
-
+                MenuSelectionLiat.SelectedIndex = 0;
+                MenuSelectionGrip.Visibility = System.Windows.Visibility.Visible;
+            }
         }
 
         void SelectionChangedEventHandler(Object sender, SelectionChangedEventArgs e)
         {
-
-            String sellected = (sender as ListBox).SelectedItem.ToString();
+            ListBox BOXX = (sender as ListBox);
+            String sellected = (BOXX.SelectedItem as TextBlock).Text;
 
             Debug.WriteLine("ListBox1SelectedIndexChanged " + sellected);
 
@@ -187,14 +90,6 @@ namespace MoreMapContent
             else if (sellected == "Remove")
             {
                 RevomeItem();
-            }
-            else if (sellected == "Bring to top")
-            {
-                BringtoTop();
-            }
-            else if (sellected == "Sent to back")
-            {
-                SentToBack();
             }
             else if (sellected == "Toggle visibility")
             {
@@ -425,187 +320,6 @@ namespace MoreMapContent
                     }
                 }
             }
-        }
-
-        void SentToBack()
-        {
-            UIElement PolygonElement = null;//PolyCircle as UIElement;
-            UIElement CircleElement = null;//Circle as UIElement;
-            UIElement RectangleElement = null;//Rectangle as UIElement;
-
-            if (Rectangle1 != null && (Rectangle1.Count() > 0))
-            {
-                RectangleElement = (Rectangle1[0].Content as UIElement);
-            }
-
-            if (Circle != null && (Circle.Count() > 0))
-            {
-                CircleElement = (Circle[0].Content as UIElement);
-            }
-
-            var Polygon = 0;
-            var RectangleZ = 0;
-            var lineZ = 0;
-
-            if (PolygonElement != null)
-            {
-                Polygon = Canvas.GetZIndex(PolygonElement);
-            }
-
-            if (CircleElement != null)
-            {
-                lineZ = Canvas.GetZIndex(CircleElement);
-            }
-
-            if (RectangleElement != null)
-            {
-                RectangleZ = Canvas.GetZIndex(RectangleElement);
-            }
-
-            Debug.WriteLine("Start values. RectangleZ: " + RectangleZ + ", circleZ: " + lineZ + ", PolygonZ: " + Polygon);
-
-            if (selected_shape == "Rectangle")
-            {
-                if (RectangleZ >= Polygon)
-                    RectangleZ = Polygon - 1;
-
-                if (RectangleZ >= lineZ)
-                    RectangleZ = lineZ - 1;
-            }
-            else if (selected_shape == "Circle")
-            {
-                if (lineZ >= Polygon)
-                    lineZ = Polygon - 1;
-
-                if (lineZ >= RectangleZ)
-                    lineZ = RectangleZ - 1;
-            }
-            else if (selected_shape == "Polygons")
-            {
-                if (Polygon >= lineZ)
-                    Polygon = lineZ - 1;
-
-                if (Polygon >= RectangleZ)
-                    Polygon = RectangleZ - 1;
-            }
-
-            if (PolygonElement != null)
-            {
-                Debug.WriteLine("Set PolygonElement: " + Polygon);
-                Canvas.SetZIndex(PolygonElement, Polygon);
-
-                UIElement PolyRectEle = null;//PolyRect as UIElement;
-                if (PolyRectEle != null)
-                {
-                    Canvas.SetZIndex(PolyRectEle, Polygon);
-                }
-            }
-
-            if (CircleElement != null)
-            {
-                Debug.WriteLine("Set CircleElement: " + lineZ);
-                Canvas.SetZIndex(CircleElement, lineZ);
-            }
-
-            if (RectangleElement != null)
-            {
-                Debug.WriteLine("Set RectangleElement: " + RectangleZ);
-                Canvas.SetZIndex(RectangleElement, RectangleZ);
-            }
-        }
-
-        void BringtoTop()
-        {
-            UIElement PolygonElement = null;// PolyCircle as UIElement;
-            UIElement CircleElement = null;//Circle as UIElement;
-            UIElement RectangleElement = null;//Rectangle1 as UIElement;
-
-            if (Rectangle1 != null && (Rectangle1.Count() > 0))
-            {
-                RectangleElement = (Rectangle1[0].Content as UIElement);
-            }
-
-            if (Circle != null && (Circle.Count() > 0))
-            {
-                CircleElement = (Circle[0].Content as UIElement);
-            }
-
-            var PolygonZ = 0;
-            var RectangleZ = 0;
-            var lineZ = 0;
-
-            if (PolygonElement != null)
-            {
-                PolygonZ = Canvas.GetZIndex(PolygonElement);
-            }
-
-            if (CircleElement != null)
-            {
-                lineZ = Canvas.GetZIndex(CircleElement);
-            }
-
-            if (RectangleElement != null)
-            {
-                RectangleZ = Canvas.GetZIndex(RectangleElement);
-            }
-
-            Debug.WriteLine("Start values. RectangleZ: " + RectangleZ + ", circleZ: " + lineZ + ", PolygonZ: " + PolygonZ);
-
-            if (selected_shape == "Rectangle")
-            {
-                if (RectangleZ <= PolygonZ)
-                    RectangleZ = PolygonZ + 1;
-
-                if (RectangleZ <= lineZ)
-                    RectangleZ = lineZ + 1;
-            }
-            else if (selected_shape == "Circle")
-            {
-                if (lineZ <= PolygonZ)
-                    lineZ = PolygonZ + 1;
-
-                if (lineZ <= RectangleZ)
-                    lineZ = RectangleZ + 1;
-            }
-            else if (selected_shape == "Polygons")
-            {
-                if (PolygonZ <= lineZ)
-                    PolygonZ = lineZ + 1;
-
-                if (PolygonZ <= RectangleZ)
-                    PolygonZ = RectangleZ + 1;
-            }
-
-            if (PolygonElement != null)
-            {
-                Debug.WriteLine("Set PolygonElement: " + PolygonZ);
-                Canvas.SetZIndex(PolygonElement, PolygonZ);
-
-                UIElement PolyRectEle = null;//PolyRect as UIElement;
-                if (PolyRectEle != null)
-                {
-                    Canvas.SetZIndex(PolyRectEle, PolygonZ);
-                }
-            }
-
-            if (CircleElement != null)
-            {
-                Debug.WriteLine("Set CircleElement: " + lineZ);
-                Canvas.SetZIndex(CircleElement, lineZ);
-            }
-
-            if (RectangleElement != null)
-            {
-                Debug.WriteLine("Set RectangleElement: " + RectangleZ);
-                Canvas.SetZIndex(RectangleElement, RectangleZ);
-            }
-        }
-
-        void Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            // Close the popup.
-            PopupP.IsOpen = false;
-            Debug.WriteLine("Cancel_Click ");
         }
 
         public static double ToRadian(double degrees)

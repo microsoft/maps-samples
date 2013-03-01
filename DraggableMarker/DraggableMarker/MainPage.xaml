@@ -37,11 +37,6 @@
                 >
             </maps:Map>
         </Grid>
-
-        <!--Uncomment to see an alignment grid to help ensure your controls are
-            aligned on common boundaries.  Remove or comment out before shipping
-            your application.-->
-        <!--<Image Margin="0" Source="/Assets/AlignmentGrid.png" Stretch="None" IsHitTestVisible="False" />-->
     </Grid>
 
 </phone:PhoneApplicationPage>

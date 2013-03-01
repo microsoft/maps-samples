@@ -211,9 +211,6 @@ namespace MyLocation
             {
                 headingText.Text = "Head: " + e.Position.Location.Course.ToString();
             }
-
-
-
         }
 
         public static double ToRadian(double degrees)

@@ -5,7 +5,8 @@
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:maps="clr-namespace:Microsoft.Phone.Maps.Controls;assembly=Microsoft.Phone.Maps"
-   
+   xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -25,11 +26,12 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="MyExamples" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock Text="Select location" Style="{StaticResource PhoneTextNormalStyle}"/>
             <TextBlock x:Name="TitleBox" Text="" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle2Style}"/>
 
             <TextBox x:Name="geoBox" Text=""/>
             <Button Content="Geo code" Click="GeoButton_Click" />
+            <toolkit:PerformanceProgressBar x:Name="GeoProgress" IsIndeterminate="false"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
@@ -38,7 +40,7 @@
             <maps:Map
                 Name="map1"
                 Center="60.22,24.81" 
-                ZoomLevel="5" 
+                ZoomLevel="10" 
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                LandmarksEnabled="True"
@@ -47,6 +49,22 @@
             <StackPanel x:Name="zoomPanel" Background="#77000000" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="211"  Width="52" Margin="0,0,0,60" >
                 <Slider x:Name="zoomSlider" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="201" Width="42" Minimum="1" Maximum="20" ValueChanged="zoomSlider_ValueChanged_1"  Margin="0,0,0,80"/>
             </StackPanel>
+
+            <Grid Margin="12,0,12,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <Canvas Grid.Column="1">
+                    <Ellipse x:Name="MylocDot" Stroke="Gray" Fill="Gray" Width="50" Height="50" MouseLeftButtonUp="myLocation_MouseLeftButtonUp"  Margin="0,10,0,5"></Ellipse>
+                </Canvas>
+
+            </Grid>
+
+            <toolkit:ListPicker Background="#77000000" Visibility="Collapsed" x:Name="resultList"/>
         </Grid>
 
 

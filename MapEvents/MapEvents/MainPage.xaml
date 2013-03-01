@@ -31,23 +31,15 @@
                 Center="60.22,24.81" 
                 ZoomLevel="16" 
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-               
-                >
+                VerticalAlignment="Stretch">
             </maps:Map>
-
         </Grid>
-
-        <!--Uncomment to see an alignment grid to help ensure your controls are
-            aligned on common boundaries.  Remove or comment out before shipping
-            your application.-->
-        <!--<Image Margin="0" Source="/Assets/AlignmentGrid.png" Stretch="None" IsHitTestVisible="False" />-->
     </Grid>
 
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
-            <shell:ApplicationBarIconButton IconUri="appbar.new.rest.png" Text="ZoomIn" Click="IconButton_ZoomIn_Click" />
-            <shell:ApplicationBarIconButton IconUri="appbar.minus.rest.png" Text="ZoomOut" Click="IconButton_ZoomOut_Click" />
+            <shell:ApplicationBarIconButton IconUri="/Assets/AppBar/add.png" Text="ZoomIn" Click="IconButton_ZoomIn_Click" />
+            <shell:ApplicationBarIconButton IconUri="/Assets/minus.png" Text="ZoomOut" Click="IconButton_ZoomOut_Click" />
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem Text="change heading" Click="MenuItem_Heading_Click" />
                 <shell:ApplicationBarMenuItem Text="Go to Sello" Click="MenuItem_GotoSello_Click" />

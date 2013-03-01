@@ -23,7 +23,7 @@ namespace DraggableMarker
     {
         bool draggingNow = false;
         MapOverlay oneMarker = null;
-        
+
 
         // Constructor
         public MainPage()

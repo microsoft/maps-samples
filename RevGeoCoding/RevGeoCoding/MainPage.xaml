@@ -28,21 +28,15 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-<maps:Map
+            <maps:Map
                 Name="map1"
                 Center="60.22,24.81" 
                 ZoomLevel="10" 
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
-               LandmarksEnabled="True"
-                >
+               LandmarksEnabled="True">
             </maps:Map>
         </Grid>
-
-        <!--Uncomment to see an alignment grid to help ensure your controls are
-            aligned on common boundaries.  Remove or comment out before shipping
-            your application.-->
-        <!--<Image Margin="0" Source="/Assets/AlignmentGrid.png" Stretch="None" IsHitTestVisible="False" />-->
     </Grid>
 
 </phone:PhoneApplicationPage>

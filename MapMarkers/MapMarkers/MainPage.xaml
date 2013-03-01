@@ -19,30 +19,62 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-           </StackPanel>
+        <StackPanel Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock Text="Simple Content Example" Style="{StaticResource PhoneTextNormalStyle}"/>
+        </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-<maps:Map
+        <Grid x:Name="ContentPanel" Grid.Row="1" Grid.RowSpan="2" Margin="12,0,12,0">
+            <maps:Map
                 Name="map1"
                 Center="60.22,24.81" 
                 ZoomLevel="16" 
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
-               LandmarksEnabled="True"
-                >
+               LandmarksEnabled="True">
             </maps:Map>
         </Grid>
 
-        <!--Uncomment to see an alignment grid to help ensure your controls are
-            aligned on common boundaries.  Remove or comment out before shipping
-            your application.-->
-        <!--<Image Margin="0" Source="/Assets/AlignmentGrid.png" Stretch="None" IsHitTestVisible="False" />-->
+        <!--WE need to add this after the Map, so it will be drawn on top -->
+        <Grid x:Name="MenuButGrip" Grid.Row="1" Margin="12,17,0,28">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" x:Name="OnemarkerBut" Content="One marker" Click="Button_Menubut_Click"/>
+            <Button Grid.Column="1" x:Name="MarkersBut" Content="5 Markers" Click="Button_Menubut_Click"/>
+        </Grid>
+
+
+        <Grid x:Name="MenuSelectionGrip" Visibility="Collapsed" Background="#BB000000" Grid.Row="1" Grid.RowSpan="2" Margin="12,17,0,28">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <ListBox x:Name="MenuSelectionLiat" Grid.Row="0"  Grid.ColumnSpan="2"  
+                     FontSize="35" Margin="0,5,0,10" SelectionChanged="SelectionChangedEventHandler">
+                <TextBlock Text=""/>
+                <TextBlock Text="Add"/>
+                <TextBlock Text="Remove" />
+                <TextBlock Text="Fit to View" />
+                <TextBlock Text="Remove one marker" />
+                <TextBlock Text="Change text" />
+            </ListBox>
+            
+            <Button Grid.Row="1" Grid.Column="1" x:Name="CanCelMenuBut" Content="Close" Click="Button_Menubut_Click"/>
+        </Grid>
     </Grid>
 
 </phone:PhoneApplicationPage>

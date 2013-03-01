@@ -48,14 +48,13 @@
 
 
         <Grid x:Name="ButtPanel" Grid.Row="3" Margin="12,0,12,0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-            </Grid.RowDefinitions>
-
             <Button x:Name="OkBut" Grid.Column="0" Content="Ok" Click="Button_Click" />
             <Button x:Name="CanCelBut" Grid.Column="1" Content="Cancel" Click="Button_Click" />
         </Grid>

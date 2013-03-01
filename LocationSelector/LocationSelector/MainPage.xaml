@@ -6,6 +6,8 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:myns="clr-namespace:LocationSelector" 
+    
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -20,24 +22,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- LOCALIZATION NOTE:
-            To localize the displayed strings copy their values to appropriately named
-            keys in the app's neutral language resource file (AppResources.resx) then
-            replace the hard-coded text value between the attributes' quotation marks
-            with the binding clause whose path points to that string name.
-
-            For example:
-
-                Text="{Binding Path=LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}"
-
-            This binding points to the template's string resource named "ApplicationTitle".
-
-            Adding supported languages in the Project Properties tab will create a
-            new resx file per language that can carry the translated values of your
-            UI strings. The binding in these examples will cause the value of the
-            attributes to be drawn from the .resx file that matches the
-            CurrentUICulture of the app at run time.
-         -->
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
@@ -67,18 +51,15 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock  Grid.Row="0" Grid.ColumnSpan="3" Text="Origin latitude/longitude:" />
-            <TextBox   Grid.Row="1"  Grid.ColumnSpan="3" x:Name="LatitudeBox1"></TextBox>
-            <TextBox Grid.Row="2" Grid.ColumnSpan="3"  x:Name="LongittudeBox1" ></TextBox>
+            <myns:NumberInputBox Grid.Row="1"  Grid.ColumnSpan="3" x:Name="LatitudeBox1" Type="Float" MaxValue="90" MinValue="-90"/>
+            <myns:NumberInputBox Grid.Row="2" Grid.ColumnSpan="3"  x:Name="LongittudeBox1" Type="Float" MaxValue="180" MinValue="-180"/>
             <Button x:Name="getGeoButton1" Grid.Row="0"  Grid.RowSpan="3" Grid.Column="3" Content="Get " Click="Button_gridbut_Click"/>
-            
 
             <TextBlock Grid.Row="4" Grid.ColumnSpan="3" Text="Destination latitude/longitude:" />
-            <TextBox Grid.Row="5" Grid.ColumnSpan="3"  x:Name="LatitudeBox2"></TextBox>
-            <TextBox Grid.Row="6" Grid.ColumnSpan="3"  x:Name="LongittudeBox2" ></TextBox>
+            <myns:NumberInputBox Grid.Row="5" Grid.ColumnSpan="3"  x:Name="LatitudeBox2" Type="Float" MaxValue="90" MinValue="-90"/>
+            <myns:NumberInputBox Grid.Row="6" Grid.ColumnSpan="3" x:Name="LongittudeBox2" Type="Float" MaxValue="180" MinValue="-180"/>
             <Button x:Name="getGeoButton2" Grid.Row="4"  Grid.RowSpan="3" Grid.Column="3"  Content="Get " Click="Button_gridbut_Click"/>
-            
 
-            
         </Grid>
 
   </Grid>

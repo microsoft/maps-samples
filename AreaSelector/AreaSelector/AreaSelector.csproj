@@ -93,6 +93,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NumberInputBox.cs" />
     <Compile Include="AreaSelectorPage.xaml.cs">
       <DependentUpon>AreaSelectorPage.xaml</DependentUpon>
     </Compile>

@@ -1,6 +1,4 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -24,12 +22,17 @@ namespace LocationSelector
 {
     public partial class LocationSelectorPage : PhoneApplicationPage
     {
-        
+        GeoCoordinateWatcher watcher = null;
+        GeoCoordinate myPosition = null;
+        MapPolygon PolyCircle = null;
+
         bool isOrigin = false;
         bool draggingNow = false;
         MapLayer markerLayer = null;
         GeocodeQuery geoQ = null;
         MapOverlay oneMarker = null;
+
+        IList<MapLocation> GeoResuls = null;
 
         // Constructor
         public LocationSelectorPage()
@@ -47,6 +50,29 @@ namespace LocationSelector
 
             map1.Tap += map1_Tap;
             map1.ZoomLevelChanged += map1_ZoomLevelChanged;
+
+            resultList.SelectionChanged += resultList_SelectionChanged;
+
+            watcher = new GeoCoordinateWatcher(GeoPositionAccuracy.Default);
+            watcher.MovementThreshold = 20; // 20 meters
+
+            watcher.StatusChanged += new EventHandler<GeoPositionStatusChangedEventArgs>(OnStatusChanged);
+            watcher.PositionChanged += new EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>(OnPositionChanged);
+
+            watcher.Start();
+        }
+
+        void resultList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender == resultList && (oneMarker != null))
+            {
+                int indexx = resultList.SelectedIndex;
+                if (indexx >= 0 && indexx < GeoResuls.Count())
+                {
+                    oneMarker.GeoCoordinate = GeoResuls[indexx].GeoCoordinate;
+                    map1.Center = oneMarker.GeoCoordinate;
+                }
+            }
         }
 
         void map1_ZoomLevelChanged(object sender, MapZoomLevelChangedEventArgs e)
@@ -54,10 +80,10 @@ namespace LocationSelector
             zoomSlider.Value = map1.ZoomLevel;
         }
 
-        void map1_Tap(object sender, GestureEventArgs e)
+        void map1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (oneMarker != null)
-            { 
+            {
                 Point markPoint = map1.ConvertGeoCoordinateToViewportPoint(oneMarker.GeoCoordinate);
 
                 if ((markPoint.X < 0 || markPoint.Y < 0)
@@ -105,7 +131,8 @@ namespace LocationSelector
 
             TitleBox.Text = "Select " + target;
 
-            if (target.Length > 0 && (target == "Origin")){
+            if (target.Length > 0 && (target == "Origin"))
+            {
                 isOrigin = true;
                 if ((Application.Current as App).RouteOriginLocation == null)
                 {
@@ -115,7 +142,9 @@ namespace LocationSelector
                 {
                     AddResultToMap((Application.Current as App).RouteOriginLocation);
                 }
-            }else{
+            }
+            else
+            {
                 isOrigin = false;
                 if ((Application.Current as App).SelectedLocation == null)
                 {
@@ -144,9 +173,9 @@ namespace LocationSelector
                 }
             }
 
-           this.NavigationService.GoBack();
+            this.NavigationService.GoBack();
         }
-        
+
 
         private void GeoButton_Click(object sender, RoutedEventArgs e)
         {
@@ -157,17 +186,29 @@ namespace LocationSelector
                     geoQ.CancelAsync();
                 }
 
+                GeoProgress.IsEnabled = true;
+                GeoProgress.IsIndeterminate = true;
+
+                resultList.Visibility = System.Windows.Visibility.Collapsed;
+
                 geoQ.GeoCoordinate = map1.Center;
                 geoQ.SearchTerm = geoBox.Text;
-                geoQ.MaxResultCount = 1;
+                geoQ.MaxResultCount = 20;
 
                 geoQ.QueryAsync();
                 Debug.WriteLine("GeocodeAsync started for: " + geoBox.Text);
+            }
+            else
+            {
+                MessageBox.Show("Please input address, and then press again");
             }
         }
 
         void geoQ_QueryCompleted(object sender, QueryCompletedEventArgs<IList<MapLocation>> e)
         {
+            GeoProgress.IsEnabled = false;
+            GeoProgress.IsIndeterminate = false;
+
             Debug.WriteLine("Geo query, error: " + e.Error);
             Debug.WriteLine("Geo query, cancelled: " + e.Cancelled);
             Debug.WriteLine("Geo query, cancelled: " + e.UserState.ToString());
@@ -175,8 +216,72 @@ namespace LocationSelector
 
             if (e.Result.Count() > 0)
             {
-                oneMarker.GeoCoordinate = e.Result[0].GeoCoordinate;
+                GeoResuls = e.Result;
+
+                List<String> source = new List<String>();
+
+                for (int i = 0; i < GeoResuls.Count(); i++)
+                {
+
+                    if (GeoResuls[i].Information.Name.Length > 0)
+                    {
+                        source.Add(GeoResuls[i].Information.Name);
+                    }
+                    else if (GeoResuls[i].Information.Description.Length > 0)
+                    {
+                        source.Add(GeoResuls[i].Information.Description);
+                    }
+                    else
+                    {
+                        String GeoStuff = "";
+
+                        if (GeoResuls[i].Information.Address.Street.Length > 0)
+                        {
+                            GeoStuff = GeoStuff + GeoResuls[i].Information.Address.Street;
+
+                            if (GeoResuls[i].Information.Address.HouseNumber.Length > 0)
+                            {
+                                GeoStuff = GeoStuff + " " + GeoResuls[i].Information.Address.HouseNumber;
+                            }
+                        }
+
+                        if (GeoResuls[i].Information.Address.City.Length > 0)
+                        {
+                            if (GeoStuff.Length > 0)
+                            {
+                                GeoStuff = GeoStuff + ",";
+                            }
+
+                            GeoStuff = GeoStuff + " " + GeoResuls[i].Information.Address.City;
+
+                            if (GeoResuls[i].Information.Address.Country.Length > 0)
+                            {
+                                GeoStuff = GeoStuff + " " + GeoResuls[i].Information.Address.Country;
+                            }
+                        }
+                        else if (GeoResuls[i].Information.Address.Country.Length > 0)
+                        {
+                            if (GeoStuff.Length > 0)
+                            {
+                                GeoStuff = GeoStuff + ",";
+                            }
+                            GeoStuff = GeoStuff + " " + GeoResuls[i].Information.Address.Country;
+                        }
+
+                        source.Add(GeoStuff);
+                    }
+                }
+                resultList.Visibility = System.Windows.Visibility.Visible;
+                resultList.ItemsSource = source;
+                resultList.SelectedIndex = 0;
+
+                oneMarker.GeoCoordinate = GeoResuls[0].GeoCoordinate;
                 map1.Center = oneMarker.GeoCoordinate;
+
+            }
+            else
+            {
+                MessageBox.Show("No results found.");
             }
         }
 
@@ -231,9 +336,104 @@ namespace LocationSelector
             map1.Center = oneMarker.GeoCoordinate;
         }
 
-        private void geoBox_TextChanged_1(object sender, TextChangedEventArgs e)
+        void OnPositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
         {
-          
+            myPosition = e.Position.Location;
+            MylocDot.Fill = new SolidColorBrush(Colors.Green);
+            UpDateMyPositionCircle();
+        }
+
+        void OnStatusChanged(object sender, GeoPositionStatusChangedEventArgs e)
+        {
+            switch (e.Status)
+            {
+                case GeoPositionStatus.Ready:
+                    break;
+                case GeoPositionStatus.Disabled:
+                case GeoPositionStatus.Initializing:
+                case GeoPositionStatus.NoData:
+                default:
+                    {
+                        myPosition = null;
+                        MylocDot.Fill = new SolidColorBrush(Colors.Gray);
+                        UpDateMyPositionCircle();
+                    }
+                    break;
+            }
+        }
+
+        void UpDateMyPositionCircle()
+        {
+            if (myPosition != null)
+            {
+                double accuracy = myPosition.HorizontalAccuracy;
+
+                if (accuracy < myPosition.VerticalAccuracy)
+                {
+                    accuracy = myPosition.VerticalAccuracy;
+                }
+
+                if (PolyCircle == null)
+                {
+                    PolyCircle = new MapPolygon();
+
+                    PolyCircle.FillColor = Color.FromArgb(0x55, 0x00, 0xFF, 0x00);
+                    PolyCircle.StrokeColor = Color.FromArgb(0xFF, 0x00, 0xFF, 0x00);
+                    PolyCircle.StrokeThickness = 1;
+
+                    map1.MapElements.Add(PolyCircle);
+                }
+
+                if (accuracy < 50)
+                {
+                    accuracy = 50; // to be able to show the polygon
+                }
+
+                PolyCircle.Path = CreateCircle(myPosition, accuracy);
+            }
+            else if (PolyCircle != null)
+            {
+                map1.MapElements.Remove(PolyCircle);
+                PolyCircle = null;
+            }
+        }
+
+        public static double ToRadian(double degrees)
+        {
+            return degrees * (Math.PI / 180);
+        }
+
+        public static double ToDegrees(double radians)
+        {
+            return radians * (180 / Math.PI);
+        }
+
+        public static GeoCoordinateCollection CreateCircle(GeoCoordinate center, double radius)
+        {
+            var earthRadius = 6367000; // radius in meters
+            var lat = ToRadian(center.Latitude); //radians
+            var lng = ToRadian(center.Longitude); //radians
+            var d = radius / earthRadius; // d = angular distance covered on earth's surface
+            var locations = new GeoCoordinateCollection();
+
+            for (var x = 0; x <= 360; x++)
+            {
+                var brng = ToRadian(x);
+                var latRadians = Math.Asin(Math.Sin(lat) * Math.Cos(d) + Math.Cos(lat) * Math.Sin(d) * Math.Cos(brng));
+                var lngRadians = lng + Math.Atan2(Math.Sin(brng) * Math.Sin(d) * Math.Cos(lat), Math.Cos(d) - Math.Sin(lat) * Math.Sin(latRadians));
+
+                locations.Add(new GeoCoordinate(ToDegrees(latRadians), ToDegrees(lngRadians)));
+            }
+
+            return locations;
+        }
+
+        void myLocation_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (myPosition != null)
+            {
+                map1.Center = myPosition;
+            }
         }
     }
 }

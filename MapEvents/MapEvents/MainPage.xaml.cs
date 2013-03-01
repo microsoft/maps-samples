@@ -259,7 +259,7 @@ namespace MapEvents
         {
             Debug.WriteLine("GotoSello");
             //map1.Center = new GeoCoordinate(60.22, 24.81);
-
+            // using setview, gives us possibility on using the animations
             map1.SetView(new GeoCoordinate(60.22, 24.81), map1.ZoomLevel, map1.Heading, map1.Pitch, MapAnimationKind.Parabolic);
         }
 

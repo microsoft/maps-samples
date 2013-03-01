@@ -6,6 +6,7 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:myns="clr-namespace:AreaSelector" 
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -23,19 +24,20 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="MY APPLICATION" Style="{StaticResource PhoneTextNormalStyle}" Margin="12,0"/>
-            <TextBlock Text="page name" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+            <TextBlock Text="Example" Style="{StaticResource PhoneTextNormalStyle}" Margin="12,0"/>
+            <TextBlock Text="Area selector" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <StackPanel Orientation="Vertical"  Grid.Row="0" >
                 <TextBlock Text="Location latitude:" />
-                <TextBox x:Name="LatitudeBox"></TextBox>
+                <myns:NumberInputBox x:Name="LatitudeBox" Type="Float" MaxValue="90" MinValue="-90"/>
                 <TextBlock Text="Location longitude:" />
-                <TextBox x:Name="LongittudeBox" ></TextBox>
+                <myns:NumberInputBox x:Name="LongittudeBox" Type="Float" MaxValue="180" MinValue="-180"/>
+
                 <TextBlock Text="Radius:" />
-                <TextBox x:Name="StringBox" Text=""></TextBox>
+                <myns:NumberInputBox x:Name="StringBox" Type="IntegerPositive"  MaxValue="100000" MinValue="30"/>
 
                 <Button x:Name="getGeoButton" Content="Get area" Click="Button_gridbut_Click"/>
 
