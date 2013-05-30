@@ -1,0 +1,56 @@
+﻿<phone:PhoneApplicationPage
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:maps="clr-namespace:Microsoft.Phone.Maps.Controls;assembly=Microsoft.Phone.Maps"
+    xmlns:local="clr-namespace:CustomTileSource"
+    x:Class="CustomTileSource.MainPage"
+    mc:Ignorable="d"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    shell:SystemTray.IsVisible="True">
+
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="Map1" Grid.Row="0" Margin="12,12,12,6">
+            <maps:Map x:Name="regular" Center="61.483485,23.759258" ZoomLevel="14">
+            </maps:Map>
+            <TextBlock Text="Reference map" Style="{StaticResource PhoneTextNormalStyle}" Margin="12,12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </Grid>
+        <Grid x:Name="Map2" Grid.Row="1" Margin="12,6,12,6">
+            <maps:Map x:Name="quadKeyTiles" Center="61.483485,23.759258" ZoomLevel="14">
+                <maps:Map.TileSources>
+                    <maps:TileSource UriFormat="http://t{subdomain}.tiles.virtualearth.net/tiles/dp/content?p=tf&amp;a={quadkey}&amp;n=z" />
+                </maps:Map.TileSources>
+            </maps:Map>
+            <TextBlock Text="Quadkey tiles source" Style="{StaticResource PhoneTextNormalStyle}" Margin="12,12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </Grid>
+        <Grid x:Name="Map3" Grid.Row="2" Margin="12,6,12,12">
+            <maps:Map x:Name="xyZoomTiles" Center="61.483485,23.759258" ZoomLevel="14">
+                <maps:Map.TileSources>
+                    <local:MyCustomTileSource />
+                </maps:Map.TileSources>
+            </maps:Map>
+            <TextBlock Text="Custom tiles source" Style="{StaticResource PhoneTextNormalStyle}" Margin="12,12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </Grid>
+
+        <!--Uncomment to see an alignment grid to help ensure your controls are
+            aligned on common boundaries.  The image has a top margin of -32px to
+            account for the System Tray. Set this to 0 (or remove the margin altogether)
+            if the System Tray is hidden.
+
+            Before shipping remove this XAML and the image itself.-->
+        <!-- <Image Source="/Assets/AlignmentGrid.png" VerticalAlignment="Top" Height="800" Width="480" Margin="0,-32,0,0" Grid.Row="0" Grid.RowSpan="2" IsHitTestVisible="False" /> -->
+    </Grid>
+
+</phone:PhoneApplicationPage>
