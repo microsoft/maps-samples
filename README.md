@@ -139,4 +139,4 @@ Very simple example for showing how to run position tracking in the background.
 
 ---
 
-* Copyright (c) 2012-2013 Nokia Corporation. All rights reserved.*
+*Copyright (c) 2012-2013 Nokia Corporation. All rights reserved.*
