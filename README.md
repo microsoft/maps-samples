@@ -36,7 +36,7 @@ Shows map moving to predefined locations:
 * Toggling pedestrian features & landmarks on/off
 * Setting multiple values with `setview()`
 
-## Simple Map content
+## Simple map content
  
 Shows how to add and remove Markers (MapOverlay), Polyline and Polygon to the
 Map. Example also shows how to zoom the map in order to fit the selected map
@@ -47,7 +47,7 @@ There is also related wiki articles for this example code:
 and
 [Hiding map content with Windows Phone maps API](http://www.developer.nokia.com/Community/Wiki/Showing/Hiding_map_content_with_Windows_Phone_maps_API).
 
-## More Map content
+## More map content
 
 Shows how to make rectangle & circle with polygon and how to add them into the
 map. Also shows differences adding ellipse & rectangle objects to the map
