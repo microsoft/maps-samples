@@ -12,7 +12,7 @@ are available on the wiki:
 * Ovi Js Maps: [Maps Examples for Ovi Maps API](http://www.developer.nokia.com/Community/Wiki/Maps_Examples_for_Ovi_Maps_API)
 
 This project is hosted in GitHub:
-https://github.com/nokia-developer/maps-samples
+https://github.com/Microsoft/maps-samples
 
 
 ## Hello map
